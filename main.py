@@ -5,15 +5,20 @@ from PIL import Image
 import os
 
 
-current_path = os.getcwd()
 ## CONSTANTS
-DIR_MODELS = os.path.join(current_path, 'models/')
-DIR_PROTOS = os.path.join(current_path, 'protos/')
-
-faceProto= DIR_PROTOS + "opencv_face_detector.pbtxt"
-faceModel= DIR_MODELS + "opencv_face_detector_uint8.pb"
-ageProto= DIR_PROTOS + "age_deploy.prototxt"
-ageModel= DIR_MODELS + "age_net.caffemodel"
+C_PATH= os.getcwd()
+DIR_MODELS = os.path.join(C_PATH, 'models/')
+DIR_PROTOS = os.path.join(C_PATH, 'protos/')
+MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
+AGELIST = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
+O_INDEX = np.array([i for i in range(0, 101)])
+FACEPROTO = DIR_PROTOS + "opencv_face_detector.pbtxt"
+FACEMODEL = DIR_MODELS + "opencv_face_detector_uint8.pb"
+AGEPROTO_A = DIR_PROTOS + "age_deploy.prototxt"
+AGEMODEL_A = DIR_MODELS + "age_net.caffemodel"
+AGEPROTO_I = DIR_PROTOS + "age.prototxt"
+AGEMODEL_I = DIR_MODELS + "dex_chalearn_iccv2015.caffemodel"
+# ----------------------------------------------------------------------------------------------------------------------
 ## Functions
 # highlightFace function
 def highlightFace(net, frame, conf_threshold=0.7):
@@ -40,10 +45,10 @@ def highlightFace(net, frame, conf_threshold=0.7):
 def check_age(image):
     MODEL_MEAN_VALUES=(78.4263377603, 87.7689143744, 114.895847746)
     ageList=['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
-    output_indexes = np.array([i for i in range(0, 101)])
+    # output_indexes = np.array([i for i in range(0, 101)])
 
-    faceNet=cv2.dnn.readNet(faceModel,faceProto)
-    ageNet=cv2.dnn.readNet(ageModel,ageProto)
+    faceNet=cv2.dnn.readNet(FACEMODEL, FACEPROTO)
+    ageNet=cv2.dnn.readNet(AGEMODEL_A, AGEPROTO_A)
     padding=20
     resultImg,faceBoxes=highlightFace(faceNet,image)
     if not faceBoxes:
