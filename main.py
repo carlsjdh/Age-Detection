@@ -52,7 +52,7 @@ def check_age(image):
     padding=20
     resultImg,faceBoxes=highlightFace(faceNet,image)
     if not faceBoxes:
-        print("No face detected")
+        return None
 
     for faceBox in faceBoxes:
         face=image[max(0,faceBox[1]-padding):
@@ -96,7 +96,9 @@ def main_loop():
         original_image = Image.open(image_file)
         original_image = np.array(original_image)
     processed_image = check_age(original_image)
-
+    if processed_image is None:
+        st.text("No se encontraron rostros en la imagen")
+        return None
     st.text("Resultados:")
     st.image([processed_image])
 
