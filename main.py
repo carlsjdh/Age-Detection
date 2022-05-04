@@ -53,7 +53,7 @@ def check_age(image):
     resultImg,faceBoxes=highlightFace(faceNet,image)
     if not faceBoxes:
         return [None, None]
-
+    age_list = []
     for faceBox in faceBoxes:
         face=image[max(0,faceBox[1]-padding):
                 min(faceBox[3]+padding,image.shape[0]-1),max(0,faceBox[0]-padding)
@@ -66,9 +66,9 @@ def check_age(image):
         ageNet.setInput(blob)
         agePreds=ageNet.forward()
         age=ageList[agePreds[0].argmax()]
-
+        age_list.append(age)
         cv2.putText(resultImg, f'{age}', (faceBox[0], faceBox[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,255), 2, cv2.LINE_AA)
-        return [resultImg, age]
+    return [resultImg, age_list]
 #----------------------------------------------------------
 # --------------------------------------
 
@@ -99,8 +99,10 @@ def main_loop():
     if processed_image is None:
         st.text("No se encontraron rostros en la imagen")
         return None
-    st.text("Resultados: "+ age + " años")
-    st.image(processed_image)
+    st.text("Resultados: ")
+    for i in range(len(age)):
+        st.text(f'Edad: ' + age[i])
+    st.image(processed_image, caption='Edad detectada', use_column_width=True)
 
 
 if __name__ == '__main__':
