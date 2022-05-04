@@ -52,7 +52,7 @@ def check_age(image):
     padding=20
     resultImg,faceBoxes=highlightFace(faceNet,image)
     if not faceBoxes:
-        return None
+        return [None, None]
 
     for faceBox in faceBoxes:
         face=image[max(0,faceBox[1]-padding):
@@ -68,7 +68,7 @@ def check_age(image):
         age=ageList[agePreds[0].argmax()]
 
         cv2.putText(resultImg, f'{age}', (faceBox[0], faceBox[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,255), 2, cv2.LINE_AA)
-        return resultImg
+        return [resultImg, age]
 #----------------------------------------------------------
 # --------------------------------------
 
@@ -95,12 +95,12 @@ def main_loop():
 
         original_image = Image.open(image_file)
         original_image = np.array(original_image)
-    processed_image = check_age(original_image)
+    processed_image, age = check_age(original_image)
     if processed_image is None:
         st.text("No se encontraron rostros en la imagen")
         return None
-    st.text("Resultados:")
-    st.image([processed_image])
+    st.text("Resultados: "+ age + " años")
+    st.image(processed_image)
 
 
 if __name__ == '__main__':
