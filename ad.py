@@ -1,13 +1,17 @@
-from secrets import choice
 import cv2
 import argparse
 import numpy as np
 import os
 
 parser=argparse.ArgumentParser()
-parser.add_argument('-img','--image', help='Path to image file.')
+parser.add_argument('-img','--image',
+    required=True,
+    help='Path to image file.'
+)
 parser.add_argument('-m','--mode',
-    choices=['adience','imdb', 'both']
+    required=True,
+    choices=['adience','imdb', 'both'],
+    help='Age estimation model to use.'
 )
 args=parser.parse_args()
 
@@ -54,6 +58,7 @@ def age_adience(face):
     ageNet_A.setInput(blob)
     agePreds=ageNet_A.forward()
     age=AGELIST[agePreds[0].argmax()]
+    print(agePreds[0].argmax())
     return age
 # age imdb function
 def age_imdb(face):
